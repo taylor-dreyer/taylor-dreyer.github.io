@@ -1,0 +1,231 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+/* Navigation Styles */
+nav#menuItems {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100px;
+    height: 100vh;
+    background-color: #000;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+
+nav#menuItems button {
+    width: 100%;
+    padding: 12px 8px;
+    border: none;
+    background-color: #0000ff;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+/* Navigation button hover effect */
+nav#menuItems button:hover {
+    background-color: #ff0000;
+}
+
+/* Jump Menu Styles */
+#jumpMenu {
+    display: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+#jumpMenu li {
+    width: 100%;
+}
+
+#jumpMenu li a {
+    display: block;
+    padding: 8px 12px;
+    background-color: #FFA500;
+    color: #000;
+    text-decoration: none;
+    font-size: 12px;
+    border-bottom: 1px solid #000;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Jump menu item hover effect */
+#jumpMenu li a:hover {
+    background-color: #FFFF00;
+    color: #0000ff;
+}
+
+/* Show jump menu when hovering over Recent Articles button */
+#recentArticles:hover + #jumpMenu,
+#jumpMenu:hover {
+    display: block;
+}
+
+/* Main Content Area */
+main {
+    margin-left: 100px;
+    padding: 0;
+}
+
+/* Header Styles */
+header {
+    background-color: #ff0000;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+header p {
+    margin: 0;
+}
+
+/* Main Heading */
+h1 {
+    text-align: center;
+    padding: 30px 20px;
+    font-size: 28px;
+    background-color: #f0f0f0;
+    margin: 0;
+}
+
+/* Container for Articles */
+#container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    padding: 20px;
+    background-color: #f0f0f0;
+}
+
+/* Article Styles */
+article {
+    background-color: white;
+    padding: 15px;
+    border: 1px solid #ddd;
+    color: #cccccc;
+    transition: color 2s ease, transform 2s ease, box-shadow 2s ease;
+}
+
+/* Article hover effect - darker text and expanded */
+article:hover {
+    color: #000000;
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+article h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+article p {
+    line-height: 1.6;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+/* First letter styling - Times New Roman, 36px */
+article p:first-of-type::first-letter {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 36px;
+    font-weight: bold;
+    float: left;
+    line-height: 1;
+    margin-right: 5px;
+}
+
+/* Google links (Read more) with arrow */
+article p a[href*="google.com"]::after {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-left: 5px;
+    background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"%3e%3cpath fill="%230645ad" d="M2 2v8h8V6.5h1V11H1V1h4.5v1H2z"/%3e%3cpath fill="%230645ad" d="M11 1v4.5h-1V2.707L6.854 5.854l-.708-.708L9.293 2H6.5V1H11z"/%3e%3c/svg%3e');
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+}
+
+article p a {
+    color: #0645ad;
+    text-decoration: none;
+}
+
+article p a:hover {
+    text-decoration: underline;
+}
+
+/* Thank You Section */
+#thanks {
+    text-align: center;
+    padding: 30px;
+    background-color: #f0f0f0;
+    margin: 0;
+}
+
+#thanks a {
+    color: #0645ad;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+#thanks a:hover {
+    text-decoration: underline;
+}
+
+/* Footer Styles */
+footer {
+    background-color: #333;
+    color: white;
+    padding: 30px 20px;
+    margin-top: 0;
+}
+
+footer p {
+    font-size: 20px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+address {
+    font-style: normal;
+}
+
+address div {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px 15px;
+}
+
+address span {
+    color: white;
+}
+
+address a {
+    color: #66b3ff;
+    text-decoration: none;
+}
+
+address a:hover {
+    text-decoration: underline;
+}
