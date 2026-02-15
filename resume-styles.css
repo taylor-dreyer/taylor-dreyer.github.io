@@ -1,0 +1,383 @@
+/* =================================
+   Taylor Dreyer Resume - CSS Stylesheet
+   Responsive Design: Mobile (412px) & Desktop (1920px)
+   ================================= */
+
+/* ===== CSS Reset & Base Styles ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: #f0f4f8;
+    min-height: 100vh;
+    padding: 20px 10px;
+}
+
+/* ===== Header Styles ===== */
+header {
+    background: #1e40af;
+    color: white;
+    padding: 30px 20px;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 2em;
+    margin-bottom: 15px;
+    text-align: center;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+header nav ul li {
+    font-size: 0.95em;
+}
+
+header nav a {
+    color: #fff;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    transition: border-color 0.3s ease;
+}
+
+header nav a:hover {
+    border-bottom: 1px solid #fff;
+}
+
+/* ===== Main Content Container ===== */
+main {
+    background: white;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Section Styles ===== */
+section {
+    margin-bottom: 35px;
+    padding-bottom: 25px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+section h2 {
+    color: #1e40af;
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #1e40af;
+    display: inline-block;
+}
+
+/* ===== Article Styles (Work Experience, Education, Projects) ===== */
+article {
+    margin-bottom: 25px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-left: 4px solid #1e40af;
+    border-radius: 5px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+article:hover {
+    transform: translateX(5px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+article:last-child {
+    margin-bottom: 0;
+}
+
+article h3 {
+    color: #333;
+    font-size: 1.4em;
+    margin-bottom: 8px;
+}
+
+article h3 a {
+    color: #1e40af;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s ease;
+}
+
+article h3 a:hover {
+    border-bottom: 2px solid #1e40af;
+}
+
+article p {
+    margin-bottom: 8px;
+    color: #555;
+}
+
+article p strong {
+    color: #333;
+    font-weight: 600;
+}
+
+article p em {
+    color: #777;
+    font-style: italic;
+}
+
+article ul {
+    margin-top: 12px;
+    margin-left: 20px;
+    list-style-type: disc;
+}
+
+article ul li {
+    margin-bottom: 8px;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* ===== Aside (Study Abroad) ===== */
+aside {
+    margin-top: 15px;
+    padding: 15px;
+    background: #fff;
+    border-left: 3px solid #1e40af;
+    border-radius: 4px;
+}
+
+aside h4 {
+    color: #1e40af;
+    font-size: 1.1em;
+    margin-bottom: 6px;
+}
+
+aside p {
+    color: #666;
+    font-size: 0.95em;
+}
+
+/* ===== Professional Objective ===== */
+section:first-of-type p {
+    font-size: 1.05em;
+    line-height: 1.8;
+    color: #444;
+    text-align: justify;
+}
+
+/* ===== Skills Section Special Styling ===== */
+section:last-of-type article {
+    background: #ffffff;
+    border-left: 4px solid #1e40af;
+}
+
+section:last-of-type article h3 {
+    color: #1e40af;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+section:last-of-type article p {
+    color: #555;
+    line-height: 1.7;
+    font-size: 0.98em;
+}
+
+/* ===== RESPONSIVE DESIGN - DESKTOP (1920px) ===== */
+@media screen and (min-width: 1024px) {
+    body {
+        padding: 40px 20px;
+    }
+
+    header {
+        padding: 50px 40px;
+        border-radius: 15px 15px 0 0;
+    }
+
+    header h1 {
+        font-size: 3em;
+        margin-bottom: 20px;
+    }
+
+    header nav ul {
+        flex-direction: row;
+        justify-content: center;
+        gap: 40px;
+    }
+
+    header nav ul li {
+        font-size: 1.1em;
+    }
+
+    main {
+        padding: 50px 60px;
+        border-radius: 0 0 15px 15px;
+    }
+
+    section {
+        margin-bottom: 50px;
+        padding-bottom: 35px;
+    }
+
+    section h2 {
+        font-size: 2.2em;
+        margin-bottom: 30px;
+    }
+
+    /* Two-column layout for Work Experience and Projects */
+    section:has(article:nth-child(2)) {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    section:has(article:nth-child(2)) h2 {
+        grid-column: 1 / -1;
+    }
+
+    /* Three-column layout for Skills */
+    section:last-of-type {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    section:last-of-type h2 {
+        grid-column: 1 / -1;
+    }
+
+    article {
+        padding: 25px;
+    }
+
+    article h3 {
+        font-size: 1.6em;
+    }
+
+    article ul {
+        margin-left: 25px;
+    }
+
+    section:first-of-type p {
+        font-size: 1.15em;
+        line-height: 2;
+        max-width: 90%;
+    }
+}
+
+/* ===== RESPONSIVE DESIGN - MOBILE (412px) ===== */
+@media screen and (max-width: 767px) {
+    body {
+        padding: 15px 8px;
+    }
+
+    header {
+        padding: 25px 15px;
+        border-radius: 8px 8px 0 0;
+    }
+
+    header h1 {
+        font-size: 1.8em;
+        margin-bottom: 12px;
+    }
+
+    header nav ul {
+        gap: 8px;
+    }
+
+    header nav ul li {
+        font-size: 0.9em;
+    }
+
+    main {
+        padding: 20px 15px;
+        border-radius: 0 0 8px 8px;
+    }
+
+    section {
+        margin-bottom: 28px;
+        padding-bottom: 20px;
+    }
+
+    section h2 {
+        font-size: 1.5em;
+        margin-bottom: 15px;
+    }
+
+    article {
+        padding: 15px;
+    }
+
+    article h3 {
+        font-size: 1.2em;
+    }
+
+    article p {
+        font-size: 0.95em;
+    }
+
+    article ul {
+        margin-left: 18px;
+    }
+
+    article ul li {
+        font-size: 0.9em;
+    }
+
+    aside {
+        padding: 12px;
+    }
+
+    aside h4 {
+        font-size: 1em;
+    }
+
+    aside p {
+        font-size: 0.9em;
+    }
+
+    section:first-of-type p {
+        font-size: 1em;
+        line-height: 1.7;
+        text-align: left;
+    }
+}
+
+/* ===== Print Styles ===== */
+@media print {
+    body {
+        background: white;
+        padding: 0;
+    }
+
+    header {
+        background: #1e40af;
+        border-radius: 0;
+    }
+
+    main {
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    article:hover {
+        transform: none;
+        box-shadow: none;
+    }
+}
