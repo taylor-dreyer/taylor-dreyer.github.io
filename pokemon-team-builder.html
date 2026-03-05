@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pokémon Team Builder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --red: #E3350D;
+      --yellow: #F6C80A;
+      --blue: #3B5BA7;
+      --dark-blue: #1A2A5E;
+      --light-blue: #C0E8F8;
+      --white: #FFFFFF;
+      --card-bg: #FFFFFF;
+      --shadow: 0 8px 32px rgba(59,91,167,0.18);
+      --border: 3px solid var(--yellow);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--light-blue);
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      padding: 24px 12px 48px;
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(59,91,167,0.12) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(227,53,13,0.08) 0%, transparent 50%);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    header h1 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(13px, 3vw, 22px);
+      color: var(--dark-blue);
+      text-shadow: 3px 3px 0 var(--yellow), 5px 5px 0 rgba(0,0,0,0.15);
+      letter-spacing: 1px;
+      line-height: 1.5;
+    }
+
+    header .subtitle {
+      font-size: 13px;
+      color: var(--blue);
+      font-weight: 700;
+      margin-top: 8px;
+      letter-spacing: 1px;
+    }
+
+    .layout {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+      align-items: flex-start;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ── Lookup Card ── */
+    .lookup-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      border: var(--border);
+      box-shadow: var(--shadow);
+      padding: 28px 24px 24px;
+      width: 340px;
+      flex-shrink: 0;
+    }
+
+    .lookup-card label {
+      display: block;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: var(--dark-blue);
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .search-row input {
+      flex: 1;
+      padding: 9px 13px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .search-row input:focus { border-color: var(--blue); }
+
+    .btn {
+      padding: 9px 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      transition: transform .1s, box-shadow .1s;
+    }
+    .btn:active { transform: translateY(2px); box-shadow: none !important; }
+
+    .btn-find {
+      background: var(--blue);
+      color: var(--white);
+      box-shadow: 0 4px 0 var(--dark-blue);
+    }
+    .btn-find:hover { background: var(--dark-blue); }
+
+    .btn-add {
+      background: var(--red);
+      color: var(--white);
+      box-shadow: 0 4px 0 #8B1A00;
+      width: 100%;
+      padding: 12px;
+      font-size: 9px;
+      margin-top: 16px;
+      letter-spacing: 1px;
+    }
+    .btn-add:hover { background: #c02a08; }
+    .btn-add:disabled { background: #aaa; box-shadow: 0 4px 0 #777; cursor: not-allowed; }
+
+    /* sprite area */
+    .sprite-area {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 150px;
+      margin-bottom: 12px;
+    }
+    .sprite-area img {
+      image-rendering: pixelated;
+      width: 130px;
+      height: 130px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(59,91,167,0.25));
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-8px); }
+    }
+
+    .placeholder-sprite {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e8f4fd 0%, #c0ddf0 100%);
+      border: 3px dashed #b0c8e0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px;
+    }
+
+    /* pokemon name */
+    #pokemon-name {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 11px;
+      color: var(--dark-blue);
+      text-align: center;
+      margin-bottom: 8px;
+      min-height: 16px;
+      text-transform: capitalize;
+    }
+
+    /* audio */
+    audio {
+      width: 100%;
+      margin-bottom: 16px;
+      border-radius: 30px;
+    }
+
+    /* move dropdowns */
+    .moves-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .moves-grid select {
+      padding: 7px 8px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      background: #f7faff;
+      color: var(--dark-blue);
+      cursor: pointer;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .moves-grid select:focus { border-color: var(--blue); }
+
+    .error-msg {
+      color: var(--red);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      min-height: 18px;
+      margin-bottom: 4px;
+    }
+
+    /* ── Team Card ── */
+    .team-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      border: var(--border);
+      box-shadow: var(--shadow);
+      padding: 24px 20px;
+      width: 340px;
+      flex-shrink: 0;
+    }
+
+    .team-card h2 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: var(--dark-blue);
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .team-empty {
+      text-align: center;
+      color: #aaa;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 32px 0;
+    }
+
+    .team-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .team-member {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #f0f6ff;
+      border-radius: 14px;
+      padding: 10px 14px;
+      border: 2px solid #d0e4f8;
+      animation: slideIn .3s ease;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .team-member img {
+      image-rendering: pixelated;
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .team-member-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .team-member-name {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      color: var(--dark-blue);
+      text-transform: capitalize;
+      margin-bottom: 6px;
+    }
+
+    .team-member-moves {
+      list-style: disc;
+      padding-left: 16px;
+    }
+    .team-member-moves li {
+      font-size: 11px;
+      font-weight: 700;
+      color: #444;
+      text-transform: capitalize;
+      line-height: 1.6;
+    }
+
+    .team-count {
+      text-align: center;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      color: #aaa;
+      margin-top: 12px;
+    }
+
+    /* loading spinner */
+    .spinner {
+      width: 36px; height: 36px;
+      border: 4px solid #e0eaf8;
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Pokémon Team Builder</h1>
+  <p class="subtitle">Gotta catch 'em all — build your dream team!</p>
+</header>
+
+<div class="layout">
+
+  <!-- Lookup Panel -->
+  <div class="lookup-card">
+    <label for="pokemon-input">Name or ID</label>
+    <div class="search-row">
+      <input type="text" id="pokemon-input" placeholder="e.g. pikachu or 25" autocomplete="off"/>
+      <button class="btn btn-find" id="find-btn">Find</button>
+    </div>
+
+    <div class="sprite-area" id="sprite-area">
+      <div class="placeholder-sprite">🎮</div>
+    </div>
+
+    <div id="pokemon-name"></div>
+    <p class="error-msg" id="error-msg"></p>
+
+    <audio id="pokemon-audio" controls style="display:none;"></audio>
+
+    <div class="moves-grid">
+      <select id="move1"></select>
+      <select id="move2"></select>
+      <select id="move3"></select>
+      <select id="move4"></select>
+    </div>
+
+    <button class="btn btn-add" id="add-btn" disabled>＋ Add to Team</button>
+  </div>
+
+  <!-- Team Panel -->
+  <div class="team-card">
+    <h2>⚔ My Team</h2>
+    <div id="team-empty" class="team-empty">No Pokémon yet.<br/>Search and add one!</div>
+    <div class="team-list" id="team-list"></div>
+    <div class="team-count" id="team-count"></div>
+  </div>
+
+</div>
+
+<script>
+  // ── Cache ──────────────────────────────────────────────────────────
+  const cache = {};
+
+  async function fetchPokemon(query) {
+    const key = query.toLowerCase().trim();
+    if (cache[key]) return cache[key];
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${key}`);
+    if (!res.ok) throw new Error(`No Pokémon found for "${query}"`);
+    const data = await res.json();
+    cache[key] = data;
+    return data;
+  }
+
+  // ── State ──────────────────────────────────────────────────────────
+  let currentPokemon = null;
+
+  // ── DOM refs ───────────────────────────────────────────────────────
+  const input    = document.getElementById('pokemon-input');
+  const findBtn  = document.getElementById('find-btn');
+  const addBtn   = document.getElementById('add-btn');
+  const spriteArea = document.getElementById('sprite-area');
+  const nameEl   = document.getElementById('pokemon-name');
+  const errorEl  = document.getElementById('error-msg');
+  const audioEl  = document.getElementById('pokemon-audio');
+  const selects  = [
+    document.getElementById('move1'),
+    document.getElementById('move2'),
+    document.getElementById('move3'),
+    document.getElementById('move4'),
+  ];
+  const teamList  = document.getElementById('team-list');
+  const teamEmpty = document.getElementById('team-empty');
+  const teamCount = document.getElementById('team-count');
+
+  // ── Find Pokémon ───────────────────────────────────────────────────
+  async function handleFind() {
+    const query = input.value.trim();
+    if (!query) return;
+
+    errorEl.textContent = '';
+    addBtn.disabled = true;
+    currentPokemon = null;
+    nameEl.textContent = '';
+    audioEl.style.display = 'none';
+    spriteArea.innerHTML = '<div class="spinner"></div>';
+    selects.forEach(s => { s.innerHTML = ''; s.disabled = true; });
+
+    try {
+      const data = await fetchPokemon(query);
+      currentPokemon = data;
+
+      // Sprite
+      const sprite = data.sprites.front_default || data.sprites.other?.['official-artwork']?.front_default;
+      if (sprite) {
+        spriteArea.innerHTML = `<img src="${sprite}" alt="${data.name}"/>`;
+      } else {
+        spriteArea.innerHTML = '<div class="placeholder-sprite">❓</div>';
+      }
+
+      // Name
+      nameEl.textContent = data.name;
+
+      // Audio
+      const cry = data.cries?.latest || data.cries?.legacy;
+      if (cry) {
+        audioEl.src = cry;
+        audioEl.style.display = 'block';
+      } else {
+        audioEl.style.display = 'none';
+      }
+
+      // Moves
+      const moves = data.moves.map(m => m.move.name);
+      selects.forEach((sel, idx) => {
+        sel.disabled = false;
+        moves.forEach((m, i) => {
+          const opt = document.createElement('option');
+          opt.value = m;
+          opt.textContent = m;
+          sel.appendChild(opt);
+        });
+        // Default each dropdown to a different move if possible
+        if (moves[idx]) sel.value = moves[idx];
+      });
+
+      addBtn.disabled = false;
+
+    } catch (err) {
+      spriteArea.innerHTML = '<div class="placeholder-sprite">😵</div>';
+      errorEl.textContent = err.message;
+    }
+  }
+
+  findBtn.addEventListener('click', handleFind);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') handleFind(); });
+
+  // ── Add to Team ────────────────────────────────────────────────────
+  addBtn.addEventListener('click', () => {
+    if (!currentPokemon) return;
+
+    const sprite = currentPokemon.sprites.front_default ||
+                   currentPokemon.sprites.other?.['official-artwork']?.front_default || '';
+
+    const chosenMoves = selects.map(s => s.value).filter(Boolean);
+
+    // Build list item
+    const li = document.createElement('div');
+    li.className = 'team-member';
+
+    const movesHtml = chosenMoves.map(m => `<li>${m}</li>`).join('');
+    li.innerHTML = `
+      <img src="${sprite}" alt="${currentPokemon.name}"/>
+      <div class="team-member-info">
+        <div class="team-member-name">${currentPokemon.name}</div>
+        <ul class="team-member-moves">${movesHtml}</ul>
+      </div>`;
+
+    teamList.appendChild(li);
+    teamEmpty.style.display = 'none';
+
+    const count = teamList.children.length;
+    teamCount.textContent = `${count} / 6 Pokémon`;
+    if (count >= 6) {
+      addBtn.disabled = true;
+      addBtn.textContent = 'Team Full!';
+    }
+  });
+</script>
+</body>
+</html>
