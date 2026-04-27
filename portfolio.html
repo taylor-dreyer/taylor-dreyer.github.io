@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IoT Smart Traffic Preemption — Integrative Innovation Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c0f;
+    --bg2: #10141a;
+    --bg3: #161c26;
+    --border: rgba(255,255,255,0.07);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.12);
+    --teal: #2dd4bf;
+    --teal-dim: rgba(45,212,191,0.1);
+    --red: #ff4d4d;
+    --red-dim: rgba(255,77,77,0.1);
+    --text: #d4d8e0;
+    --text-dim: #7a8295;
+    --text-bright: #eef0f4;
+    --accent-line: rgba(245,166,35,0.35);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0; opacity: 0.4;
+  }
+
+  /* ── SIDEBAR NAV ── */
+  nav {
+    position: fixed; left: 0; top: 0; height: 100vh; width: 220px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    padding: 2rem 1.5rem;
+    z-index: 100;
+  }
+
+  .nav-brand {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--amber);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+    line-height: 1.4;
+  }
+
+  .nav-links { list-style: none; flex: 1; }
+  .nav-links li { margin-bottom: 0.2rem; }
+  .nav-links a {
+    display: block;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 0.45rem 0.75rem;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: color 0.2s, background 0.2s;
+    border-left: 2px solid transparent;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    color: var(--amber);
+    background: var(--amber-dim);
+    border-left-color: var(--amber);
+  }
+
+  .nav-footer {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    opacity: 0.5;
+  }
+
+  /* ── MAIN CONTENT ── */
+  main {
+    margin-left: 220px;
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    padding: 6rem 5rem 5rem;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(245,166,35,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--amber);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .hero-tag::before {
+    content: '';
+    display: inline-block; width: 24px; height: 1px; background: var(--amber);
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    font-weight: 800;
+    color: var(--text-bright);
+    line-height: 1.15;
+    max-width: 700px;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 span { color: var(--amber); }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    max-width: 560px;
+    font-style: italic;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-meta {
+    display: flex; gap: 2rem; flex-wrap: wrap;
+  }
+  .hero-meta-item {
+    display: flex; flex-direction: column;
+  }
+  .hero-meta-item .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .hero-meta-item .val {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-bright);
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    padding: 4rem 5rem;
+    border-bottom: 1px solid var(--border);
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  section.visible { opacity: 1; transform: none; }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--amber);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--text-bright);
+    margin-bottom: 0.4rem;
+    line-height: 1.2;
+  }
+
+  .section-rule {
+    width: 48px; height: 2px;
+    background: var(--amber);
+    margin-bottom: 2.2rem;
+  }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--teal);
+    margin: 2rem 0 0.6rem;
+  }
+
+  p { margin-bottom: 1rem; }
+  p:last-child { margin-bottom: 0; }
+
+  strong { color: var(--text-bright); font-weight: 600; }
+
+  em { color: var(--amber); font-style: italic; }
+
+  /* ── STAT CARDS ── */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  .stat-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::after {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--amber);
+  }
+  .stat-card .num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--amber);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+  .stat-card .desc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── CALLOUT BLOCKS ── */
+  .callout {
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+    border-left: 3px solid;
+  }
+  .callout.amber { background: var(--amber-dim); border-color: var(--amber); }
+  .callout.teal  { background: var(--teal-dim); border-color: var(--teal); }
+  .callout.red   { background: var(--red-dim); border-color: var(--red); }
+
+  .callout-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .callout.amber .callout-title { color: var(--amber); }
+  .callout.teal  .callout-title { color: var(--teal); }
+  .callout.red   .callout-title { color: var(--red); }
+
+  /* ── DATA FLOW DIAGRAM ── */
+  .diagram-wrap {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: nowrap;
+    min-width: 600px;
+  }
+
+  .flow-node {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    text-align: center;
+    flex: 1;
+    min-width: 110px;
+  }
+  .flow-node .node-icon {
+    font-size: 1.5rem;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+  .flow-node .node-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .flow-node .node-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-top: 0.2rem;
+  }
+  .flow-node.highlight { border-color: var(--amber); }
+  .flow-node.highlight .node-name { color: var(--amber); }
+
+  .flow-arrow {
+    flex-shrink: 0;
+    width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--amber);
+    font-size: 1.1rem;
+    position: relative;
+  }
+  .flow-arrow::before {
+    content: '';
+    position: absolute;
+    width: 100%; height: 1px;
+    background: var(--accent-line);
+  }
+
+  /* ── ARCHITECTURE GRID ── */
+  .arch-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .arch-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+  }
+  .arch-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--teal);
+    margin-bottom: 0.5rem;
+  }
+  .arch-card p {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin: 0;
+  }
+  .arch-card .tech-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    background: rgba(45,212,191,0.1);
+    color: var(--teal);
+    border: 1px solid rgba(45,212,191,0.2);
+    border-radius: 3px;
+    padding: 0.1rem 0.4rem;
+    margin: 0.4rem 0.2rem 0 0;
+  }
+
+  /* ── EVAL TABLE ── */
+  .eval-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .eval-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+  }
+  .eval-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .eval-card .dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .eval-card ul {
+    list-style: none;
+    padding: 0;
+  }
+  .eval-card ul li {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    padding: 0.3rem 0;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; gap: 0.5rem;
+  }
+  .eval-card ul li:last-child { border: none; }
+  .eval-card ul li::before {
+    content: '→';
+    color: var(--amber);
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    margin-top: 0.1rem;
+  }
+
+  /* ── CS CONNECTIONS ── */
+  .cs-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .cs-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .cs-item::before {
+    content: attr(data-num);
+    position: absolute;
+    top: -0.5rem; right: 0.75rem;
+    font-family: 'Syne', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: rgba(255,255,255,0.03);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .cs-item h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--amber);
+    margin-bottom: 0.5rem;
+  }
+  .cs-item p {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    margin: 0;
+  }
+
+  /* ── REFLECTION QUESTIONS ── */
+  .reflection-item {
+    border-left: 2px solid var(--border);
+    padding-left: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  .reflection-item::before {
+    content: '';
+    position: absolute;
+    left: -4px; top: 0.6rem;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--amber);
+  }
+  .reflection-item .q {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+  }
+  .reflection-item p {
+    font-size: 0.95rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 3rem 5rem;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  footer.visible { opacity: 1; transform: none; }
+  .footer-inner {
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .footer-inner p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    margin: 0;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress {
+    position: fixed;
+    top: 0; left: 220px; right: 0;
+    height: 2px;
+    background: var(--amber);
+    transform-origin: left;
+    transform: scaleX(0);
+    z-index: 200;
+    transition: transform 0.1s linear;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(245,166,35,0.4); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { display: none; }
+    main { margin-left: 0; }
+    #progress { left: 0; }
+    section, .hero { padding: 3rem 2rem; }
+    footer { padding: 2rem; }
+    .arch-grid, .eval-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── PULSE DOT ── */
+  .live-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--teal);
+    border-radius: 50%;
+    margin-right: 0.4rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.7); }
+  }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0; }
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+  .tag.amber { border-color: rgba(245,166,35,0.3); color: var(--amber); background: var(--amber-dim); }
+  .tag.teal  { border-color: rgba(45,212,191,0.3); color: var(--teal);  background: var(--teal-dim); }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<!-- ── SIDEBAR ── -->
+<nav>
+  <div class="nav-brand">Integrative Innovation<br>Portfolio · COP 4910</div>
+  <ul class="nav-links">
+    <li><a href="#intro">01 Introduction</a></li>
+    <li><a href="#role">02 My Role</a></li>
+    <li><a href="#technical">03 Technical Deep Dive</a></li>
+    <li><a href="#evaluation">04 Critical Evaluation</a></li>
+    <li><a href="#cs">05 CS Integration</a></li>
+    <li><a href="#reflection">06 Reflection</a></li>
+  </ul>
+  <div class="nav-footer">Nathanael Pierre Louis · 2025</div>
+</nav>
+
+<!-- ── MAIN ── -->
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">Integrative Innovation Portfolio</div>
+    <h1>IoT-Based Smart Traffic<br><span>Signal Preemption</span><br>for the City of Orlando</h1>
+    <p class="hero-sub">An individual deep-dive into real-time emergency corridor optimization — beyond the group presentation.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="label">Student</span>
+        <span class="val">Nathanael Pierre Louis</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="label">Course</span>
+        <span class="val">COP 4910</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="label">Organization</span>
+        <span class="val">City of Orlando</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="label">Domain</span>
+        <span class="val">IoT · Smart Cities · EMS</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 4.1 INTRODUCTION ── -->
+  <section id="intro">
+    <div class="section-num">Section 01</div>
+    <h2>Introduction</h2>
+    <div class="section-rule"></div>
+
+    <h3>The Innovation</h3>
+    <p>This portfolio examines <strong>IoT-Based Smart Traffic Signal Preemption</strong> — an intelligent transportation system designed to clear green corridors for emergency vehicles in real time. The system integrates GPS-enabled emergency vehicles, edge-computing nodes at intersections, cloud-based AI routing, and programmable IoT traffic signals into a unified, low-latency response network.</p>
+
+    <h3>Organization & Context</h3>
+    <p>The innovation targets the <strong>City of Orlando, Florida</strong> — one of the fastest-growing metro areas in the United States. With a 30% population surge since 2015, average emergency response times have climbed to 9 minutes, well above the critical 4-minute cardiac survival threshold. Orlando's 600+ signalized intersections represent both the bottleneck and the opportunity: modernizing them with IoT preemption technology could compress response windows from 9 minutes to 7 minutes or fewer, directly translating to improved survival outcomes for cardiac, trauma, and fire emergencies.</p>
+
+    <div class="stat-row">
+      <div class="stat-card"><div class="num">9 min</div><div class="desc">Avg. Response Time</div></div>
+      <div class="stat-card"><div class="num">4 min</div><div class="desc">Cardiac Survival Threshold</div></div>
+      <div class="stat-card"><div class="num">600+</div><div class="desc">Signalized Intersections</div></div>
+      <div class="stat-card"><div class="num">$30M+</div><div class="desc">City-Wide Deployment Est.</div></div>
+    </div>
+
+    <h3>Real-World Relevance</h3>
+    <p>Signal preemption is not a theoretical concept — systems like <strong>Opticom</strong> by GTT Solutions have been deployed in cities across the US and Canada, using infrared or GPS-based vehicle detection. What distinguishes the Orlando proposal is the <em>edge-computing + AI routing hybrid</em>: rather than simple detection-and-hold logic, it uses predictive corridor planning, allowing the system to pre-stage signals several intersections ahead of the vehicle's current position — a meaningful architectural leap over legacy preemption.</p>
+  </section>
+
+  <!-- ── 4.2 ROLE ── -->
+  <section id="role">
+    <div class="section-num">Section 02</div>
+    <h2>My Role in the Team Project</h2>
+    <div class="section-rule"></div>
+
+    <h3>Contributions to Talk 2</h3>
+    <p>My primary responsibility was the <strong>opening narrative</strong> of the presentation: the Introduction, the Problem framing, and the "Why It Matters" section. In practice this meant researching and synthesizing Orlando-specific data — the 9-minute average response time (sourced from WFTV), the +30% population growth figure, and the 70 hours of annual traffic delay from the Orlando Sentinel — and translating these statistics into a compelling human-stakes argument for the audience.</p>
+    <p>I also contributed to the initial slide design direction and helped establish the visual language (the purple gradient palette, the card-based layout structure) that the rest of the deck followed. During the live presentation I delivered the first three slides, setting the tone and urgency before handing off to my teammates for the technical and economic sections.</p>
+
+    <div class="callout amber">
+      <div class="callout-title">What I understood well during group work</div>
+      The human-cost argument was clear to me: the statistical link between response delays and mortality, and Orlando's unique vulnerability due to rapid urbanization and aging road infrastructure.
+    </div>
+
+    <h3>What I Misunderstood or Missed</h3>
+    <p>During the group work phase I treated the technical architecture as relatively straightforward — "GPS talks to signals." Revisiting the system individually, I now understand this seriously underrepresented the complexity. I did not appreciate the distinction between <strong>reactive preemption</strong> (hold the light until the truck passes) and <strong>predictive corridor pre-staging</strong> (compute the full route graph and begin queuing phase changes 3–4 intersections ahead), or the fact that these two approaches have fundamentally different latency, network, and compute requirements.</p>
+    <p>I also underexplored the equity dimension. Our presentation claimed the system "benefits all neighborhoods," but I did not interrogate whether a phased rollout starting in high-priority corridors would concentrate early benefits in wealthier or more commercially significant areas first — a legitimate distributional justice concern.</p>
+
+    <div class="callout teal">
+      <div class="callout-title">What the team's work left underdeveloped</div>
+      The group's treatment of cybersecurity was a single bullet point. A system that controls physical traffic infrastructure over wireless networks is a high-value attack target. This deserved far deeper treatment — and this portfolio addresses that gap in Section 03.
+    </div>
+  </section>
+
+  <!-- ── 4.3 TECHNICAL DEEP DIVE ── -->
+  <section id="technical">
+    <div class="section-num">Section 03</div>
+    <h2>Technical Deep Dive</h2>
+    <div class="section-rule"></div>
+
+    <h3>System Architecture & Data Flow</h3>
+    <p>The system operates across <strong>four tiers</strong>, each with distinct latency budgets and communication protocols:</p>
+
+    <div class="diagram-wrap">
+      <div class="flow">
+        <div class="flow-node highlight">
+          <span class="node-icon">🚑</span>
+          <div class="node-label">Tier 1</div>
+          <div class="node-name">Emergency Vehicle</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <span class="node-icon">📡</span>
+          <div class="node-label">Tier 2</div>
+          <div class="node-name">Edge Node</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <span class="node-icon">☁️</span>
+          <div class="node-label">Tier 3</div>
+          <div class="node-name">Cloud AI</div>
+        </div>
+        <div class="flow-arrow">↔</div>
+        <div class="flow-node">
+          <span class="node-icon">🚦</span>
+          <div class="node-label">Tier 4</div>
+          <div class="node-name">IoT Signals</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node highlight">
+          <span class="node-icon">📊</span>
+          <div class="node-label">Tier 5</div>
+          <div class="node-name">Analytics</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-grid">
+      <div class="arch-card">
+        <h4>Tier 1 — Vehicle GPS Unit</h4>
+        <p>Sub-meter GPS hardware (typically u-blox M9 or equivalent) transmits position, heading, speed, and vehicle ID at 1–4 Hz intervals. Communication uses dedicated short-range communication (DSRC, 5.9 GHz 802.11p) or LTE-V2X (C-V2X, 3GPP Release 14+) as a fallback. Packet payloads are small (≈200 bytes), prioritized with DSCP QoS marking for low latency.</p>
+        <span class="tech-tag">DSRC / C-V2X</span>
+        <span class="tech-tag">802.11p</span>
+        <span class="tech-tag">GPS NMEA</span>
+      </div>
+      <div class="arch-card">
+        <h4>Tier 2 — Edge Computing Node</h4>
+        <p>A ruggedized compute unit at each intersection (e.g., Intel NUC-class or NVIDIA Jetson Nano) runs a local <strong>preemption decision engine</strong>. When a vehicle is detected within a configurable radius (typically 500–1500 m), the node computes time-to-arrival, evaluates current phase state, and issues a preemption request to the signal controller. End-to-end edge latency target: &lt;50 ms. Nodes maintain a local state machine and can operate autonomously if cloud connectivity is lost.</p>
+        <span class="tech-tag">NEMA TS2 Controller</span>
+        <span class="tech-tag">NTCIP 1202</span>
+        <span class="tech-tag">Edge ML</span>
+      </div>
+      <div class="arch-card">
+        <h4>Tier 3 — Cloud AI Routing Engine</h4>
+        <p>A cloud-hosted service (Kubernetes-orchestrated microservices) ingests real-time GPS streams, live traffic density data, and historical pattern data to compute optimal corridor routing. The AI component — likely a graph neural network or modified Dijkstra variant with dynamic edge weights — pre-stages preemption requests along the predicted route. It publishes planned phase-change sequences via MQTT to a broker, which edge nodes subscribe to.</p>
+        <span class="tech-tag">MQTT</span>
+        <span class="tech-tag">Kubernetes</span>
+        <span class="tech-tag">Graph NN</span>
+      </div>
+      <div class="arch-card">
+        <h4>Tier 4 — IoT Signal Controller</h4>
+        <p>Modern signal controllers (Model 2070 or ASC/3) support NTCIP (National Transportation Communications for ITS Protocol) over TCP/IP, enabling remote phase control. A preemption request overrides the normal cycle plan: the controller holds the approaching direction on green (or transitions it from red) while cross-street phases receive extended red holds. After the vehicle clears, the controller executes a recovery sequence to restore normal timing.</p>
+        <span class="tech-tag">NTCIP</span>
+        <span class="tech-tag">Model 2070</span>
+        <span class="tech-tag">Phase Hold</span>
+      </div>
+    </div>
+
+    <h3>Security Architecture — The Gap Our Team Missed</h3>
+    <p>Our group presentation mentioned "end-to-end encryption" as a single mitigation bullet, but the threat model for a system that physically controls traffic signals is substantially more complex and deserves serious analysis.</p>
+
+    <div class="callout red">
+      <div class="callout-title">Key Attack Vectors</div>
+      <strong>GPS Spoofing:</strong> An attacker broadcasting a fake GPS signal could trick a legitimate vehicle unit into transmitting false position data, triggering unwarranted preemption across a corridor — effectively creating a denial-of-service against normal traffic flow. <strong>MQTT Broker Compromise:</strong> If the cloud broker is compromised, an attacker could publish malicious phase-change sequences to all subscribed edge nodes simultaneously. <strong>Replay Attacks:</strong> Capturing and replaying valid preemption packets could trigger false activations.
+    </div>
+
+    <p>Mitigations beyond what our team described include: <strong>cryptographic vehicle identity</strong> (PKI-based certificates per vehicle, rotated regularly), <strong>plausibility filtering</strong> at edge nodes (reject position jumps inconsistent with physics), <strong>mutual TLS for MQTT</strong>, anomaly detection on preemption frequency per vehicle ID, and air-gapped backup control at each intersection.</p>
+
+    <h3>Scalability & Performance Considerations</h3>
+    <p>At full city-wide deployment (600 intersections), the cloud routing engine must handle concurrent emergencies from multiple vehicles across overlapping corridors. This creates a <strong>multi-vehicle conflict resolution</strong> problem — if two ambulances request preemption on intersecting routes, the system needs a priority queue and conflict graph resolution logic. Our team did not address this scenario at all, and it represents a significant engineering challenge, particularly during mass casualty events when many units are dispatched simultaneously.</p>
+    <p>Edge nodes mitigate cloud latency by acting as autonomous fallbacks, but their local decision-making is limited to their own intersection's state — they cannot coordinate across the corridor without cloud connectivity, meaning network outages degrade the system from "predictive corridor" mode to legacy "reactive hold" mode.</p>
+  </section>
+
+  <!-- ── 4.4 CRITICAL EVALUATION ── -->
+  <section id="evaluation">
+    <div class="section-num">Section 04</div>
+    <h2>Critical Evaluation</h2>
+    <div class="section-rule"></div>
+    <p>The following analyzes the innovation from four distinct perspectives, including limitations and risks that our group presentation did not adequately address.</p>
+
+    <div class="eval-grid">
+      <div class="eval-card">
+        <h4><span class="dot" style="background:var(--amber)"></span>Technical Perspective</h4>
+        <ul>
+          <li>GPS accuracy degrades in urban canyons (Orlando's downtown high-rises may interfere with sub-meter precision at critical intersections)</li>
+          <li>The 50 ms edge latency target is aggressive; real-world cellular backhaul may introduce 80–150 ms, causing phase-change timing errors</li>
+          <li>No mention of software update / firmware management strategy for 600 distributed edge nodes — a significant operational security surface</li>
+          <li>Multi-vehicle corridor conflicts are unaddressed — a critical gap for mass-casualty events</li>
+          <li>15–20% response time reduction claim lacks a cited peer-reviewed source specific to Orlando's road topology</li>
+        </ul>
+      </div>
+      <div class="eval-card">
+        <h4><span class="dot" style="background:var(--teal)"></span>Organizational Perspective</h4>
+        <ul>
+          <li>Integration with Orlando's existing SCOOT/SCATS traffic management software requires significant API negotiation — legacy systems may not support NTCIP 1202 without hardware replacement</li>
+          <li>Requires sustained buy-in from three distinct entities: Orlando DOT, Orange County Fire Rescue, and FDOT — each with separate procurement cycles and political priorities</li>
+          <li>Operator training must cover both the automated system and manual override protocols — our team underestimated the depth of training change management required</li>
+          <li>Vendor lock-in risk is high: if the city commits to one signal controller vendor's IoT stack, future upgrades become expensive</li>
+        </ul>
+      </div>
+      <div class="eval-card">
+        <h4><span class="dot" style="background:#c084fc)"></span>Ethical Perspective</h4>
+        <ul>
+          <li>Phased deployment in "high-priority corridors" likely means tourist/commercial corridors first — communities in East and West Orlando may wait years for equivalent coverage, raising equity concerns</li>
+          <li>Persistent GPS tracking of emergency vehicles creates movement data; even anonymized fleet data could reveal station locations, patrol patterns, or operational vulnerabilities if breached</li>
+          <li>False activations (system triggered by a non-emergency GPS spoof or software bug) disrupt civilian traffic and could create secondary accidents</li>
+          <li>Algorithmic routing decisions are opaque — communities may not understand why their intersection is held red while others are prioritized</li>
+        </ul>
+      </div>
+      <div class="eval-card">
+        <h4><span class="dot" style="background:var(--red)"></span>Societal Perspective</h4>
+        <ul>
+          <li>Aggregate improvement is real but unevenly distributed — 15–20% reduction city-wide may mask neighborhoods that see little improvement during the pilot phase</li>
+          <li>System dependency risk: over time, dispatchers may reduce driver discretion in favor of automation, degrading human response capacity if the system fails</li>
+          <li>Public trust implications of city infrastructure controlled via networked software — a high-profile cyberattack or malfunction would damage confidence in smart city initiatives broadly</li>
+          <li>Positive: the data exhaust of this system (intersection-level delay, vehicle throughput) is a genuine public good for long-term infrastructure planning</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 4.5 CS INTEGRATION ── -->
+  <section id="cs">
+    <div class="section-num">Section 05</div>
+    <h2>Integration of Computer Science Knowledge</h2>
+    <div class="section-rule"></div>
+    <p>This system draws on at least five distinct areas of computer science, each playing a critical functional role in the architecture.</p>
+
+    <div class="cs-list">
+      <div class="cs-item" data-num="01">
+        <h4>Networking &amp; Protocols</h4>
+        <p>The system's real-time data pipeline depends on carefully chosen networking protocols. DSRC (802.11p) provides ultra-low latency V2X communication at the physical intersection layer, with round-trip times under 10 ms — critical for preemption timing. LTE-C-V2X (3GPP Rel.14) acts as a cellular fallback. MQTT (Message Queuing Telemetry Transport), a publish-subscribe protocol designed for constrained IoT devices, carries phase-change commands from the cloud broker to edge subscribers. Quality of Service (QoS Level 2 — exactly once delivery) is essential here: a duplicate phase-change command at the wrong moment could hold an intersection on green indefinitely. TCP/IP with NTCIP sits at the intersection controller layer for standards-compliant signal management.</p>
+      </div>
+      <div class="cs-item" data-num="02">
+        <h4>Distributed Systems</h4>
+        <p>This is fundamentally a distributed real-time system — geographically dispersed nodes must make low-latency decisions with partial information and tolerate network partitions gracefully. The edge nodes implement a variant of the CAP theorem trade-off: during cloud connectivity loss, they sacrifice Consistency (no corridor-level coordination) to maintain Availability (local preemption still works). The cloud routing engine must handle concurrent state from hundreds of simultaneous sensors. Concepts like event-driven architecture, message brokers (Kafka or MQTT), and distributed consensus protocols for conflict resolution are all directly applicable. The multi-vehicle conflict problem maps neatly to distributed priority queue management.</p>
+      </div>
+      <div class="cs-item" data-num="03">
+        <h4>Cybersecurity &amp; Cryptography</h4>
+        <p>Because the system controls physical infrastructure, security is not optional. PKI (Public Key Infrastructure) must issue and rotate X.509 certificates for each vehicle unit, enabling mutual authentication with edge nodes. TLS 1.3 encrypts all MQTT payloads. GPS anti-spoofing requires signal authentication (OSNMA for Galileo, or proprietary u-blox AssureIT). At the application layer, HMAC message signing on preemption packets prevents replay attacks. Operating system hardening on edge nodes (minimized attack surface, read-only root filesystems, SELinux MAC policies) reduces the blast radius of a compromised node. This maps directly to coursework in cryptography, secure protocols, and operating systems security.</p>
+      </div>
+      <div class="cs-item" data-num="04">
+        <h4>Artificial Intelligence &amp; Algorithms</h4>
+        <p>The AI routing component is the system's most computationally interesting element. At its core, it is a <strong>dynamic shortest-path problem</strong> on a weighted graph where edge weights (intersection delay times) update continuously. A modified Dijkstra or A* algorithm with live weight feeds handles baseline routing. The predictive layer — pre-staging phase changes ahead of the vehicle — requires forecasting: how long will the current phase hold? What is the vehicle's ETA at the next intersection given current speed and signal state? Regression models (or LSTM networks trained on historical phase duration data) can answer this. In multi-vehicle scenarios, the conflict resolution engine is essentially a constraint satisfaction problem, solvable with local search or branch-and-bound approaches covered in AI coursework.</p>
+      </div>
+      <div class="cs-item" data-num="05">
+        <h4>Databases &amp; Data Engineering</h4>
+        <p>The analytics platform requires a multi-model database strategy. Real-time telemetry (GPS positions, phase states) suits a <strong>time-series database</strong> like InfluxDB or TimescaleDB, optimized for high-frequency write throughput and time-windowed aggregations. Historical incident records (response times per incident, per corridor, per time of day) belong in a relational store (PostgreSQL) for complex ad-hoc analytics. A geospatial layer (PostGIS) indexes intersection polygons and vehicle route paths for geographic queries. Data retention policies and anonymization pipelines are needed to prevent vehicle tracking data from becoming a privacy liability after its operational use ends. This maps to database design, data modeling, and data engineering principles.</p>
+      </div>
+      <div class="cs-item" data-num="06">
+        <h4>Operating Systems &amp; Embedded Systems</h4>
+        <p>Edge computing nodes run on constrained hardware with strict real-time requirements. A <strong>Real-Time Operating System (RTOS)</strong> — or a Linux kernel with PREEMPT_RT patches — is needed to guarantee deterministic scheduling for the preemption decision loop. The vehicle GPS unit firmware must handle sensor fusion (GPS + IMU dead-reckoning for urban canyon gaps) and transmit data with bounded jitter. Memory management is critical: heap fragmentation over months of uptime on an embedded device can introduce unpredictable latency spikes in the preemption logic — a safety-critical failure mode. OS-level concepts of interrupt handling, scheduling priorities, and memory isolation apply directly.</p>
+      </div>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag amber">Networking</span>
+      <span class="tag amber">Distributed Systems</span>
+      <span class="tag amber">Cybersecurity</span>
+      <span class="tag amber">AI / Algorithms</span>
+      <span class="tag amber">Databases</span>
+      <span class="tag amber">Operating Systems</span>
+      <span class="tag teal">IoT</span>
+      <span class="tag teal">Edge Computing</span>
+      <span class="tag teal">Real-Time Systems</span>
+    </div>
+  </section>
+
+  <!-- ── 4.6 REFLECTION ── -->
+  <section id="reflection">
+    <div class="section-num">Section 06</div>
+    <h2>Reflection</h2>
+    <div class="section-rule"></div>
+
+    <div class="callout teal">
+      <div class="callout-title"><span class="live-dot"></span>Growth Arc</div>
+      Group work → Individual understanding → Future vision. This section traces that arc honestly.
+    </div>
+
+    <div class="reflection-item">
+      <div class="q">What did you learn individually from this innovation?</div>
+      <p>I learned that what looks like a simple "GPS + signal" system is actually a layered distributed real-time architecture with non-trivial security, concurrency, and protocol-design challenges. Working through the technical deep dive independently forced me to understand the <em>why</em> behind architectural choices — why edge nodes exist (latency), why MQTT over HTTP (protocol overhead at IoT scale), why DSRC over standard WiFi (dedicated spectrum, zero interference). I also learned to think in threat models: every system that controls physical infrastructure has to be designed as if an adversary is actively trying to abuse it.</p>
+    </div>
+
+    <div class="reflection-item">
+      <div class="q">How did your understanding change after the group presentation?</div>
+      <p>During the group project, I saw myself as the "big picture person" — the problem framer. After revisiting the system individually, I realize that framing the problem well is only valuable if the technical solution you propose can actually deliver. Our presentation projected confident statistics (15–20% response time reduction) that, on deeper examination, are drawn from general ITS literature and may not map cleanly onto Orlando's specific road topology, intersection density, and legacy controller hardware. My understanding shifted from advocacy to <em>critical engineering judgment</em>.</p>
+    </div>
+
+    <div class="reflection-item">
+      <div class="q">What new perspective or vision do you now have?</div>
+      <p>I now see this innovation not just as a public safety tool, but as the <em>first node in a broader urban intelligence network</em>. The same IoT and edge-computing infrastructure that enables emergency preemption could — with appropriate data governance — support adaptive signal timing for all vehicles, pedestrian crossing optimization via computer vision, real-time air quality sensing, and predictive road maintenance alerts. The $30M investment in signal infrastructure is not a one-purpose spend; it is platform infrastructure for the next two decades of Orlando's smart city evolution.</p>
+    </div>
+
+    <div class="reflection-item">
+      <div class="q">What would you do differently if redoing the project?</div>
+      <p>I would insist on a more grounded technical specification early in the process. The group converged quickly on high-level architecture and moved to cost modeling, but we never answered: <em>which specific signal controller protocol?</em> <em>What is the decision latency of the edge node under load?</em> <em>How does the system behave when two vehicles conflict?</em> Without those answers, the $25K-per-intersection cost estimate is not well-founded. I would also have proposed a simulation model — even a simple Python graph simulation — to test the corridor pre-staging algorithm's response time claims before presenting them as projected improvements.</p>
+    </div>
+
+    <div class="reflection-item">
+      <div class="q">What did the team miss or underexplore?</div>
+      <p>Three significant gaps: (1) <strong>Cybersecurity depth</strong> — our single bullet point on encryption vastly underrepresents a safety-critical threat surface. (2) <strong>Multi-vehicle conflict resolution</strong> — the system as described cannot handle simultaneous emergencies on intersecting corridors without additional logic we never specified. (3) <strong>Equity analysis</strong> — we claimed the system "benefits all neighborhoods" without examining whether phased rollout creates a period of inequitable coverage, or whether certain communities face structural barriers to benefiting from improved response times due to other infrastructure gaps.</p>
+    </div>
+
+    <div class="reflection-item">
+      <div class="q">What opportunities exist beyond what the team identified?</div>
+      <p>The most compelling unexplored opportunity is <strong>V2X pedestrian integration</strong>: the same cellular-V2X infrastructure used for vehicle preemption can broadcast "pedestrian in crosswalk" warnings from smartphone apps or wearables, allowing edge nodes to extend pedestrian crossing time automatically. For a city with Florida's pedestrian fatality rates (consistently among the highest in the nation), this is a high-impact addition. A second opportunity: using the system's historical data to build ML models that predict <em>when and where</em> emergencies are most likely to occur by time of day, enabling pre-positioning of units — shifting from reactive to proactive emergency management.</p>
+    </div>
+
+    <div class="reflection-item">
+      <div class="q">How close is this innovation to real-world implementation?</div>
+      <p>Closer than most smart city proposals. The core components — GPS fleet tracking, NTCIP-compliant signal controllers, LTE connectivity, cloud analytics — are all commercially available today. Opticom by GTT has deployments in hundreds of US cities. What is less mature is the AI corridor pre-staging at scale and the edge-cloud integration for multi-vehicle conflict resolution. I would estimate the individual components at TRL 7–8 (system prototype demonstrated in operational environment), while the integrated Orlando-specific system as proposed is TRL 4–5 (technology validated in lab, not yet in operational environment). A realistic pilot timeline is 18–24 months from funding approval to first deployment on 20–30 intersections.</p>
+    </div>
+
+    <div class="reflection-item">
+      <div class="q">What are the main barriers?</div>
+      <p><strong>Technical:</strong> Legacy signal controller compatibility — many of Orlando's older intersections may require full hardware replacement, not just software updates, pushing the real per-intersection cost above the $25K estimate. <strong>Organizational:</strong> Multi-agency coordination across Orlando DOT, Orange County, FDOT, and multiple EMS agencies with different procurement timelines and political cycles. <strong>Ethical:</strong> Community trust — particularly in neighborhoods with historical tensions with law enforcement, real-time vehicle tracking by city infrastructure may face public resistance. <strong>Societal:</strong> Sustaining political will and budget through the 3–5 year ROI window, during which the city bears full costs without yet seeing full benefits.</p>
+    </div>
+
+    <div class="reflection-item">
+      <div class="q">What is one meaningful next step or future direction?</div>
+      <p>The single most impactful next step would be a <strong>digital twin simulation</strong> of Orlando's signalized corridor network. Using open data from Orange County's GIS system and FDOT traffic counts, a team could build a graph model of the city's intersection network and simulate the preemption algorithm under realistic traffic conditions — validating (or disproving) the 15–20% response time reduction claim before any hardware is purchased. This would cost tens of thousands of dollars rather than tens of millions, provide defensible evidence for a grant application, and surface the multi-vehicle conflict scenarios that current planning has not addressed. It is the kind of evidence-first approach that would make this proposal genuinely compelling to city decision-makers rather than aspirationally compelling.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <p>Nathanael Pierre Louis · COP 4910 · Integrative Innovation Portfolio</p>
+      <p>Innovation: IoT-Based Smart Traffic Signal Preemption · City of Orlando</p>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  // ── SCROLL PROGRESS BAR ──
+  const progress = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = total > 0 ? window.scrollY / total : 0;
+    progress.style.transform = `scaleX(${pct})`;
+  });
+
+  // ── SECTION REVEAL ON SCROLL ──
+  const targets = document.querySelectorAll('section, footer');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.06 });
+  targets.forEach(t => io.observe(t));
+
+  // ── ACTIVE NAV LINK ──
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  const navIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        const link = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  sections.forEach(s => navIO.observe(s));
+</script>
+
+</body>
+</html>
